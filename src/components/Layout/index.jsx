@@ -14,11 +14,13 @@ const Layout = () => {
   const { user } = useContext(AuthContext);
   const role = user?.data?.role || user?.user?.role;
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_SOCKET_URL);
-    socket.emit("room-admin");
-    socket.on("NEW ORDER", (data) => {
-      toast.success(data.message);
-    });
+    if (role === "admin") {
+      const socket = io(import.meta.env.VITE_SOCKET_URL);
+      socket.emit("room-admin");
+      socket.on("NEW ORDER", (data) => {
+        toast.success(data.message);
+      });
+    }
   });
   return (
     <>
