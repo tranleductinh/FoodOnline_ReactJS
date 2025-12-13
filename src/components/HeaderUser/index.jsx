@@ -40,7 +40,6 @@ const HeaderUser = () => {
     const socket = io(import.meta.env.VITE_SOCKET_URL);
 
     socket.on("data socket",(data) => {
-      console.log("Data soket",data)
       fetchCart();
     })
     return () => {
