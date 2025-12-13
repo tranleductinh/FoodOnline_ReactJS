@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { io } from 'socket.io-client';
 import AuthContext from "@/contexts/authContext";
 
 const HeaderUser = () => {
@@ -35,6 +36,17 @@ const HeaderUser = () => {
   useEffect(() => {
     fetchCart();
   }, []);
+  useEffect(() => {
+    const socket = io(import.meta.env.VITE_SOCKET_URL);
+
+    socket.on("data socket",(data) => {
+      console.log("Data soket",data)
+      fetchCart();
+    })
+    return () => {
+      socket.disconnect();
+    };
+  },[])
   return (
     <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4 mx-auto">
