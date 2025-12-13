@@ -7,7 +7,7 @@ const OrderPage = () => {
   const fetchOrders = async () => {
     try {
       const res = await getOrderById();
-      setOrders(res.data);
+      setOrders(res.data.data);
       console.log(res.data);
     } catch (error) {
       console.error(error);

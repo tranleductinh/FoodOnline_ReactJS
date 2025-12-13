@@ -7,6 +7,7 @@ import { changeStatus, getAllOrders } from "@/services/api/order";
 import { Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
 const OrderManagementPage = () => {
   const [orders, setOrders] = useState([]);
@@ -16,10 +17,9 @@ const OrderManagementPage = () => {
   const fetchOrders = async () => {
     try {
       const res = await getAllOrders();
-      setOrders(res.data);
-      console.log("order",res.data)
+      setOrders(res.data.data);
       const map = {};
-      res.data.forEach((order) => {
+      res.data.data.forEach((order) => {
         map[order._id] = order.status;
       });
       setShow(map);
@@ -27,7 +27,7 @@ const OrderManagementPage = () => {
       toast.error(error.response.data.message);
     }
   };
-  
+
   const handleChangeStatus = async (_id, status) => {
     try {
       const res = await changeStatus(_id, { status });
@@ -74,7 +74,13 @@ const OrderManagementPage = () => {
     },
     {
       title: "Status",
-      render: (row) => <StatusFoodManagement row={row} setOrders={setOrders} setStatus={setStatus}/>,
+      render: (row) => (
+        <StatusFoodManagement
+          row={row}
+          setOrders={setOrders}
+          setStatus={setStatus}
+        />
+      ),
       classNameTitle: "hidden sm:table-cell",
     },
     {
@@ -103,6 +109,13 @@ const OrderManagementPage = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
+  useEffect(() => {
+    const socket = io(import.meta.env.VITE_SOCKET_URL);
+    socket.emit("room-admin");
+    socket.on("NEW ORDER", (data) => {
+      fetchOrders();
+    });
+  });
   return (
     <div>
       <div className="mb-6">
@@ -111,8 +124,12 @@ const OrderManagementPage = () => {
           Manage and update customer orders
         </p>
       </div>
-      <ManagementTable columns={orderManagement} rows={orders} show={show} status={status}/>
-     
+      <ManagementTable
+        columns={orderManagement}
+        rows={orders}
+        show={show}
+        status={status}
+      />
     </div>
   );
 };

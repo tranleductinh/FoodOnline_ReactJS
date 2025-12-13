@@ -12,6 +12,7 @@ const OrderHistoryItem = ({ orders }) => {
     setOrderDetail(order);
     setOpen(!open);
   };
+  if(!orders) return null
   return (
     <>
       <div className="space-y-4">

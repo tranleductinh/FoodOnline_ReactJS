@@ -38,7 +38,7 @@ const HeaderUser = () => {
   }, []);
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SOCKET_URL);
-
+    socket.emit("room-user")
     socket.on("data socket",(data) => {
       fetchCart();
     })
